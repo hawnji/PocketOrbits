@@ -4,7 +4,7 @@
   "number": 9,
   "name": "Twin Pebbles",
   "difficulty": 4,
-  "teaches": "Two planets, each with its own dock; one beacon affects both, and planets must not collide.",
+  "teaches": "Two planets, each with its own dock. Every beacon pulls both planets, and they must not collide.",
   "objective": "Dock each planet in the dock of its own colour.",
   "bounds": [-4.5, -8, 4.5, 8],
   "planets": [

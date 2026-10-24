@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Compile check for the Unity-facing code (runtime, editor, PlayMode tests) against Unity 2021.3 reference
+    assemblies from nuget.org. It does NOT replace opening the project in Unity: URP-only code (PO_URP) and the
+    Unity Test Framework are stubbed or excluded. Run ../fetch-unity-refs.sh first.
+    Build twice:  dotnet build -p:UnityTarget=Player   and   dotnet build -p:UnityTarget=Editor
+  -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>CS0618;CS0649;CS0414</NoWarn>
+    <UnityTarget Condition="'$(UnityTarget)' == ''">Player</UnityTarget>
+    <DefineConstants Condition="'$(UnityTarget)' == 'Player'">UNITY_ANDROID;UNITY_2021_3_OR_NEWER</DefineConstants>
+    <DefineConstants Condition="'$(UnityTarget)' == 'Editor'">UNITY_EDITOR;UNITY_ANDROID;UNITY_INCLUDE_TESTS;UNITY_2021_3_OR_NEWER</DefineConstants>
+    <OutputPath>bin/$(UnityTarget)/</OutputPath>
+    <IntermediateOutputPath>obj/$(UnityTarget)/</IntermediateOutputPath>
+    <AssemblyName>UnityCompileCheck</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Assets/Game/Scripts/Core/**/*.cs" />
+    <Compile Include="../../Assets/Game/Scripts/Runtime/**/*.cs" />
+    <Compile Include="EngineStubs.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UnityTarget)' == 'Editor'">
+    <Compile Include="../../Assets/Game/Scripts/Editor/**/*.cs" />
+    <Compile Include="../../Assets/Game/Tests/PlayMode/**/*.cs" />
+    <Compile Include="TestFrameworkStubs.cs" />
+    <Reference Include="UnityEditor"><HintPath>../.unityrefs/UnityEditor.dll</HintPath><Private>false</Private></Reference>
+    <PackageReference Include="NUnit" Version="3.14.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="../.unityrefs/UnityEngine*.dll"><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

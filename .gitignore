@@ -16,3 +16,4 @@
 /DotNet/**/bin/
 /DotNet/**/obj/
 /DotNet/**/TestResults/
+/DotNet/.unityrefs/
