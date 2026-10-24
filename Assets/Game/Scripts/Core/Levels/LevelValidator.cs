@@ -181,6 +181,7 @@ namespace PocketOrbits.Core.Levels
         public Objectives.FailureReason Failure;
         public string Error;
         public double SimTime;
+        public int TargetsCaptured;
     }
 
     /// <summary>Plays a list of actions through a real <see cref="PuzzleSession"/> (level test harness).</summary>
@@ -211,6 +212,7 @@ namespace PocketOrbits.Core.Levels
             result.Moves = session.Moves;
             result.Failure = session.LastOutcome.Reason;
             result.SimTime = session.State.Time;
+            result.TargetsCaptured = session.State.CapturedTargetCount;
             return result;
         }
     }

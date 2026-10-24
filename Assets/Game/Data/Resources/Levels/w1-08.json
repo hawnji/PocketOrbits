@@ -1,0 +1,52 @@
+{
+  "id": "w1-08",
+  "world": 1,
+  "number": 8,
+  "name": "Mid-Course",
+  "difficulty": 3,
+  "teaches": "Turn-based flight: the planet pauses every few seconds so the beacon can be moved again mid-flight.",
+  "objective": "The flight pauses every 2.5 s. Move the beacon between legs to reach the dock.",
+  "bounds": [-4.5, -8, 4.5, 8],
+  "turnDuration": 2.5,
+  "previewDuration": 6,
+  "planets": [
+    { "id": "p1", "pos": [-0.8, -6.5], "vel": [0, 2.4], "radius": 0.35, "style": "ringed" }
+  ],
+  "sources": [
+    { "id": "sun", "kind": "star", "pos": [0, 1], "strength": 3, "radius": 0.7 },
+    {
+      "id": "b1",
+      "kind": "beacon",
+      "pos": [3.5, -6],
+      "strength": 4,
+      "mobility": "movable",
+      "regions": [
+        { "rect": [-4, -6.5, 4, 6.5] }
+      ]
+    }
+  ],
+  "targets": [
+    { "id": "t1", "kind": "dock", "pos": [2.5, 5.5], "radius": 1.0, "captureSpeed": 2.2 }
+  ],
+  "stars": { "twoStarMoves": 3, "threeStarMoves": 2 },
+  "hints": [
+    { "text": "The flight pauses every 2.5 seconds. You can move the beacon between legs.", "focus": "b1" },
+    { "text": "First pull the planet right of the sun, then move the beacon up by the dock.", "focus": "b1", "area": [1, -3, 1.0] },
+    { "text": "First leg: beacon at the marked spot. Second leg: top right corner by the dock.", "revealsSolution": true }
+  ],
+  "solution": {
+    "actions": [
+      { "type": "place", "beacon": "b1", "pos": [1, -3] },
+      { "type": "launch" },
+      { "type": "place", "beacon": "b1", "pos": [3.75, 6.25] },
+      { "type": "launch" },
+      { "type": "launch" },
+      { "type": "launch" },
+      { "type": "launch" },
+      { "type": "launch" },
+      { "type": "launch" },
+      { "type": "launch" }
+    ],
+    "expectedStars": 3
+  }
+}

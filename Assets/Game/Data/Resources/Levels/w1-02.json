@@ -1,0 +1,41 @@
+{
+  "id": "w1-02",
+  "world": 1,
+  "number": 2,
+  "name": "Hard Turn",
+  "difficulty": 1,
+  "teaches": "The closer the beacon, the harder it pulls and the sharper the turn.",
+  "objective": "Pull the planet into a sharp turn towards the dock.",
+  "bounds": [-4.5, -8, 4.5, 8],
+  "planets": [
+    { "id": "p1", "pos": [2.5, -6.5], "vel": [0, 2.6], "radius": 0.35, "style": "ice" }
+  ],
+  "sources": [
+    {
+      "id": "b1",
+      "kind": "beacon",
+      "pos": [3.5, 5.5],
+      "strength": 5,
+      "mobility": "movable",
+      "regions": [
+        { "rect": [-3.5, -3, 3.5, 6] }
+      ]
+    }
+  ],
+  "targets": [
+    { "id": "t1", "kind": "dock", "pos": [-3, 3.5], "radius": 1.0, "captureSpeed": 2.2 }
+  ],
+  "stars": { "twoStarMoves": 2, "threeStarMoves": 1 },
+  "hints": [
+    { "text": "The beacon is the only thing you can move. Closer means a stronger pull.", "focus": "b1" },
+    { "text": "Pull the planet left early, just after it starts moving.", "focus": "b1", "area": [0.6, -2.6, 1.0] },
+    { "text": "Place the beacon at the marked spot, then launch.", "revealsSolution": true }
+  ],
+  "solution": {
+    "actions": [
+      { "type": "place", "beacon": "b1", "pos": [0.6, -2.8] },
+      { "type": "launch" }
+    ],
+    "expectedStars": 3
+  }
+}

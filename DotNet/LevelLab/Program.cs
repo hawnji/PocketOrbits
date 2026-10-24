@@ -32,6 +32,14 @@ namespace PocketOrbits.LevelLab
             }
         }
 
+        /// <summary>Adds the trailing launches a turn-based level needs to play out after the last move.</summary>
+        static List<SolutionAction> Finish(LevelDefinition level, List<SolutionAction> actions)
+        {
+            int extra = level.TurnDuration > 0 ? (int)Math.Ceiling(level.Constants.MaxDuration / level.TurnDuration) : 0;
+            for (int i = 0; i < extra; i++) actions.Add(new SolutionAction { Type = SolutionActionType.Launch });
+            return actions;
+        }
+
         static LevelDefinition Load(string path) => LevelJson.Parse(File.ReadAllText(path), Path.GetFileName(path));
 
         static int Check(string dir)
@@ -74,15 +82,19 @@ namespace PocketOrbits.LevelLab
             {
                 var pts = Grid(b, step).ToList();
                 var ok = new System.Collections.Concurrent.ConcurrentDictionary<Vec2, double>();
+                var partial = new System.Collections.Concurrent.ConcurrentDictionary<Vec2, int>();
                 Parallel.ForEach(pts, p =>
                 {
-                    var r = SolutionRunner.Run(level, new List<SolutionAction>
+                    var r = SolutionRunner.Run(level, Finish(level, new List<SolutionAction>
                     {
                         new SolutionAction { Type = SolutionActionType.Place, Beacon = b.Id, Position = p },
                         new SolutionAction { Type = SolutionActionType.Launch },
-                    });
+                    }));
                     if (r.Completed) ok[p] = r.SimTime;
+                    else if (r.TargetsCaptured > 0) partial[p] = r.TargetsCaptured;
                 });
+                if (partial.Count > 0)
+                    Console.WriteLine($"    partial (some targets): {partial.Count} points, e.g. {string.Join(" ", partial.Keys.OrderBy(q => q.X).ThenBy(q => q.Y).Where((q, i) => i % Math.Max(1, partial.Count / 6) == 0))}");
                 Console.WriteLine($"  beacon {b.Id}: {ok.Count}/{pts.Count} grid points solve in one move ({100.0 * ok.Count / Math.Max(1, pts.Count):0.0}%)");
                 if (ok.Count > 0)
                 {
@@ -93,6 +105,37 @@ namespace PocketOrbits.LevelLab
                     var minX = ok.Keys.Min(p => p.X); var maxX = ok.Keys.Max(p => p.X);
                     var minY = ok.Keys.Min(p => p.Y); var maxY = ok.Keys.Max(p => p.Y);
                     Console.WriteLine($"    solution bbox x[{minX:0.##},{maxX:0.##}] y[{minY:0.##},{maxY:0.##}]");
+                }
+            }
+
+            if (level.TurnDuration > 0 && movable.Count == 1)
+            {
+                // Two-stage search: move, launch one turn, move again, play out.
+                var b = movable[0];
+                var first = Grid(b, 0.5).ToList();
+                var second = Grid(b, 0.25).ToList();
+                var ok = new System.Collections.Concurrent.ConcurrentBag<(Vec2, Vec2)>();
+                Parallel.ForEach(first, p =>
+                {
+                    foreach (var q in second)
+                    {
+                        var r = SolutionRunner.Run(level, Finish(level, new List<SolutionAction>
+                        {
+                            new SolutionAction { Type = SolutionActionType.Place, Beacon = b.Id, Position = p },
+                            new SolutionAction { Type = SolutionActionType.Launch },
+                            new SolutionAction { Type = SolutionActionType.Place, Beacon = b.Id, Position = q },
+                            new SolutionAction { Type = SolutionActionType.Launch },
+                        }));
+                        if (r.Completed && r.Moves == 2) ok.Add((p, q));
+                    }
+                });
+                var list = ok.ToList();
+                Console.WriteLine($"  turn-based two-move: {list.Count}/{first.Count * second.Count} solve");
+                foreach (var g in list.GroupBy(x => x.Item1).OrderByDescending(g => g.Count()).Take(4))
+                {
+                    var qs = g.Select(x => x.Item2).ToList();
+                    var best = qs.OrderByDescending(q => qs.Count(o => Vec2.Distance(o, q) <= 0.26)).First();
+                    Console.WriteLine($"    first {g.Key}: {g.Count()} second positions, most robust second {best}");
                 }
             }
 

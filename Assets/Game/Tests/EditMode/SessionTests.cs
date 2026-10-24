@@ -295,7 +295,10 @@ namespace PocketOrbits.Tests.EditMode
                 i++;
             }
             Assert.Greater(i, 10);
-            if (end == PredictionEnd.AllTargetsCaptured) Assert.AreEqual(GameState.LevelCompleted, session.Current);
+            Assert.AreNotEqual(GameState.LevelFailed, session.Current);
+            // Turn-based levels hand control back mid-flight; the prediction covers the whole remaining flight.
+            bool turnEnded = session.Current == GameState.ReadyForInput;
+            if (end == PredictionEnd.AllTargetsCaptured && !turnEnded) Assert.AreEqual(GameState.LevelCompleted, session.Current);
         }
 
         [Test]
@@ -335,6 +338,7 @@ namespace PocketOrbits.Tests.EditMode
             var s = new PuzzleSession(level);
             foreach (var a in level.Solution.Actions)
             {
+                if (s.Current == GameState.LevelCompleted) break;
                 if (a.Type == SolutionActionType.Launch)
                 {
                     AssertPreviewMatchesLive(s);

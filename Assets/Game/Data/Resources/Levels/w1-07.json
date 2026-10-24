@@ -1,0 +1,42 @@
+{
+  "id": "w1-07",
+  "world": 1,
+  "number": 7,
+  "name": "Waypoint",
+  "difficulty": 3,
+  "teaches": "Sequential objectives: touch the numbered waypoint first, then dock.",
+  "objective": "Pass through waypoint 1, then reach the dock.",
+  "bounds": [-4.5, -8, 4.5, 8],
+  "planets": [
+    { "id": "p1", "pos": [-2.5, -6.5], "vel": [0, 2.4], "radius": 0.35, "style": "terra" }
+  ],
+  "sources": [
+    {
+      "id": "b1",
+      "kind": "beacon",
+      "pos": [3.5, -2],
+      "strength": 4,
+      "mobility": "movable",
+      "regions": [
+        { "rect": [-0.5, -2.5, 4, 4.5] }
+      ]
+    }
+  ],
+  "targets": [
+    { "id": "w1", "kind": "waypoint", "pos": [-1.6, 0], "radius": 0.6, "order": 0 },
+    { "id": "t1", "kind": "dock", "pos": [2.3, 5.8], "radius": 1.0, "captureSpeed": 2.2, "order": 1 }
+  ],
+  "stars": { "twoStarMoves": 2, "threeStarMoves": 1 },
+  "hints": [
+    { "text": "The dock stays locked until waypoint 1 has been touched.", "focus": "w1" },
+    { "text": "Keep the beacon low and close: a small early bend, a bigger late one.", "focus": "b1", "area": [-0.2, -2.0, 0.8] },
+    { "text": "Place the beacon at the marked spot, then launch.", "revealsSolution": true }
+  ],
+  "solution": {
+    "actions": [
+      { "type": "place", "beacon": "b1", "pos": [-0.3, -2.3] },
+      { "type": "launch" }
+    ],
+    "expectedStars": 3
+  }
+}

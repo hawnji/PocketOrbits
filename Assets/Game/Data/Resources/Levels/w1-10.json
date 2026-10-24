@@ -1,0 +1,56 @@
+{
+  "id": "w1-10",
+  "world": 1,
+  "number": 10,
+  "name": "Grand Tour",
+  "difficulty": 4,
+  "teaches": "Combines waypoints, orbit rings and a limited-use beacon (it can only be moved once).",
+  "objective": "Visit waypoint 1, then settle into orbit around the sun.",
+  "bounds": [-4.5, -8, 4.5, 8],
+  "maxMoves": 3,
+  "planets": [
+    { "id": "p1", "pos": [-1.2, -6.5], "vel": [0, 2.4], "radius": 0.3, "style": "ringed" }
+  ],
+  "sources": [
+    { "id": "sun", "kind": "star", "pos": [0, 2], "strength": 3, "radius": 0.7 },
+    {
+      "id": "b1",
+      "kind": "beacon",
+      "pos": [3.5, -4],
+      "strength": 4,
+      "mobility": "limited-use",
+      "uses": 1,
+      "regions": [
+        { "rect": [-4, -5.5, 4, -3.5] }
+      ]
+    },
+    {
+      "id": "b2",
+      "kind": "beacon",
+      "pos": [3.5, -1],
+      "strength": 3,
+      "mobility": "movable",
+      "regions": [
+        { "rect": [-4, -1.6, 4, -0.8] }
+      ]
+    }
+  ],
+  "targets": [
+    { "id": "w1", "kind": "waypoint", "pos": [-3, -2], "radius": 0.6, "order": 0 },
+    { "id": "ring", "kind": "orbit-ring", "center": "sun", "radius": 2.2, "tolerance": 0.35, "captureSpeed": 0.5, "dwell": 0.6, "drag": 4, "order": 1 }
+  ],
+  "stars": { "twoStarMoves": 3, "threeStarMoves": 2 },
+  "hints": [
+    { "text": "The lower beacon can only be moved once. Waypoint 1 comes first.", "focus": "b1" },
+    { "text": "Swing left to the waypoint, then use the middle beacon to bend up alongside the ring.", "focus": "b2", "area": [-1.5, -1.25, 0.8] },
+    { "text": "Place both beacons at the marked spots, then launch.", "revealsSolution": true }
+  ],
+  "solution": {
+    "actions": [
+      { "type": "place", "beacon": "b1", "pos": [-3.25, -5] },
+      { "type": "place", "beacon": "b2", "pos": [-1.5, -1.25] },
+      { "type": "launch" }
+    ],
+    "expectedStars": 3
+  }
+}
